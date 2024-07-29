@@ -13,16 +13,18 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import team.aquatic.studios.tools.SkullCreator;
+import team.aquatic.studios.tools.Utils;
 
 import java.util.*;
 
-public class MenuElementos implements Listener, CommandExecutor {
+public class Menu implements Listener, CommandExecutor {
 
     private final Elementos plugin;
     private final Map<Integer, Runnable> slotActions = new HashMap<>();
-    private final Map<Player, Boolean> hasSelectedElement = new HashMap<>();
+    private final Map<Player, Boolean> haSeleccionadoElemento = new HashMap<>();
 
-    public MenuElementos(Elementos plugin) {
+    public Menu(Elementos plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
@@ -30,26 +32,26 @@ public class MenuElementos implements Listener, CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player jugador = (Player) sender;
 
-            if (player.hasPermission("academy.elemento.hielo") ||
-                    player.hasPermission("academy.elemento.luz") ||
-                    player.hasPermission("academy.elemento.magma") ||
-                    player.hasPermission("academy.elemento.oscuridad")) {
-                player.sendMessage(Utils.translateColor("&cYa tienes un elemento seleccionado"));
+            if (jugador.hasPermission("academy.elemento.hielo") ||
+                    jugador.hasPermission("academy.elemento.luz") ||
+                    jugador.hasPermission("academy.elemento.magma") ||
+                    jugador.hasPermission("academy.elemento.oscuridad")) {
+                jugador.sendMessage(Utils.translateColor("&cYa tienes un elemento seleccionado"));
                 return true;
             }
 
-            openMenu(player);
+            abrirMenu(jugador);
             return true;
         }
         return false;
     }
 
-    public void openMenu(Player player) {
-        Inventory inv = Bukkit.createInventory(null, 27, Utils.translateColor("&8Elementos"));
+    public void abrirMenu(Player jugador) {
+        Inventory inventario = Bukkit.createInventory(null, 27, Utils.translateColor("&8Elementos"));
 
-        inv.setItem(10, createMenuItem(
+        inventario.setItem(10, crearItemMenu(
                 "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZhYWI1OGZhMDFmY2U5YWY0NjllZDc0N2FlZDgxMWQ3YmExOGM0NzZmNWE3ZjkwODhlMTI5YzMxYjQ1ZjMifX19",
                 "&#8CBCFF&lHIELO - &#8CBCFF[&#8ECAFF❄&#90D7FF]",
                 new String[]{
@@ -62,9 +64,9 @@ public class MenuElementos implements Listener, CommandExecutor {
                         "&a¡Selecciona este objeto para ingresar al elemento!"
                 }
         ));
-        slotActions.put(10, () -> ejecutarAccion(player, "academy.elemento.hielo", Sound.ENTITY_ENDER_EYE_DEATH));
+        slotActions.put(10, () -> ejecutarAccion(jugador, "academy.elemento.hielo", Sound.ENTITY_ENDER_EYE_DEATH));
 
-        inv.setItem(12, createMenuItem(
+        inventario.setItem(12, crearItemMenu(
                 "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTc2ODJmZDE3YWM0NGI4NmE3MDVjYTA0YzkyNjU0ZTFlZDkxYTI0Zjg4MGFmMmUwOTU0Y2E3NjYyZjQ3NTU1MiJ9fX0=",
                 "&#FFFE77&lLUZ - &#FFFE77[&#F2FF7E☀&#E5FF85]",
                 new String[]{
@@ -77,9 +79,9 @@ public class MenuElementos implements Listener, CommandExecutor {
                         "&a¡Selecciona este objeto para ingresar al elemento!"
                 }
         ));
-        slotActions.put(12, () -> ejecutarAccion(player, "academy.elemento.luz", Sound.ITEM_TRIDENT_RETURN));
+        slotActions.put(12, () -> ejecutarAccion(jugador, "academy.elemento.luz", Sound.ITEM_TRIDENT_RETURN));
 
-        inv.setItem(14, createMenuItem(
+        inventario.setItem(14, crearItemMenu(
                 "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzIxZDA5MzBiZDYxZmVhNGNiOTAyN2IwMGU5NGUxM2Q2MjAyOWM1MjRlYTBiMzI2MGM3NDc0NTdiYTFiY2ZhMSJ9fX0=",
                 "&#7F2020&lMAGMA - &#7F2020[&#7F1A1A🔥&#7E1313]",
                 new String[]{
@@ -93,9 +95,9 @@ public class MenuElementos implements Listener, CommandExecutor {
                         "&a¡Selecciona este objeto para ingresar al elemento!"
                 }
         ));
-        slotActions.put(14, () -> ejecutarAccion(player, "academy.elemento.magma", Sound.ITEM_FIRECHARGE_USE));
+        slotActions.put(14, () -> ejecutarAccion(jugador, "academy.elemento.magma", Sound.ITEM_FIRECHARGE_USE));
 
-        inv.setItem(16, createMenuItem(
+        inventario.setItem(16, crearItemMenu(
                 "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjQyNmFiODg4Mjk4YWRmMWVmZmQ4MTFjODA3NGRlZjA5NzgwZTdkOWQxMmJhNGM3N2I3M2ZkYTk5ODJkZDBmZSJ9fX0=",
                 "&#3B3B3B&lOSCURIDAD - &#3B3B3B[&#3B3B3B☠&#3A3A3A]",
                 new String[]{
@@ -108,24 +110,24 @@ public class MenuElementos implements Listener, CommandExecutor {
                         "&a¡Selecciona este objeto para ingresar al elemento!"
                 }
         ));
-        slotActions.put(16, () -> ejecutarAccion(player, "academy.elemento.oscuridad", Sound.ENTITY_WARDEN_LISTENING_ANGRY));
+        slotActions.put(16, () -> ejecutarAccion(jugador, "academy.elemento.oscuridad", Sound.ENTITY_WARDEN_LISTENING_ANGRY));
 
-        player.openInventory(inv);
-        player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 2, 2);
-        hasSelectedElement.put(player, false);
+        jugador.openInventory(inventario);
+        jugador.playSound(jugador.getLocation(), Sound.BLOCK_CHEST_OPEN, 2, 2);
+        haSeleccionadoElemento.put(jugador, false);
     }
 
-    private ItemStack createMenuItem(String texture, String name, String[] lore) {
-        ItemStack item = SkullCreator.itemWithBase64(SkullCreator.createSkull(), texture);
+    private ItemStack crearItemMenu(String textura, String nombre, String[] lore) {
+        ItemStack item = SkullCreator.itemWithBase64(SkullCreator.createSkull(), textura);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(Utils.translateHexColorCodes(Utils.translateColor(name)));
+        meta.setDisplayName(Utils.translateHexColorCodes(Utils.translateColor(nombre)));
 
-        List<String> translatedLore = new ArrayList<>();
-        for (String line : lore) {
-            translatedLore.add(Utils.translateHexColorCodes(Utils.translateColor(line)));
+        List<String> loreTraducido = new ArrayList<>();
+        for (String linea : lore) {
+            loreTraducido.add(Utils.translateHexColorCodes(Utils.translateColor(linea)));
         }
 
-        meta.setLore(translatedLore);
+        meta.setLore(loreTraducido);
         item.setItemMeta(meta);
         return item;
     }
@@ -136,34 +138,32 @@ public class MenuElementos implements Listener, CommandExecutor {
         event.setCancelled(true);
         if (event.getCurrentItem() == null || event.getCurrentItem().getItemMeta() == null) return;
 
-        Player player = (Player) event.getWhoClicked();
+        Player jugador = (Player) event.getWhoClicked();
 
-        if (hasSelectedElement.getOrDefault(player, false)) return;
+        if (haSeleccionadoElemento.getOrDefault(jugador, false)) return;
 
         int slot = event.getSlot();
-        Runnable action = slotActions.get(slot);
-        if (action != null) {
-            action.run();
+        Runnable accion = slotActions.get(slot);
+        if (accion != null) {
+            accion.run();
         }
     }
 
-    private void ejecutarAccion(Player player, String permiso, Sound sonido) {
-        hasSelectedElement.put(player, true);
+    private void ejecutarAccion(Player jugador, String permiso, Sound sonido) {
+        haSeleccionadoElemento.put(jugador, true);
 
-        player.performCommand("dialogues mago");
-        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user " + player.getName() + " permission set " + permiso);
-        player.playSound(player.getLocation(), sonido, 100, -5);
-        player.closeInventory();
+        jugador.performCommand("dialogues mage");
+        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user " + jugador.getName() + " permission set " + permiso);
+        jugador.playSound(jugador.getLocation(), sonido, 100, -5);
+        jugador.closeInventory();
     }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        Player player = (Player) event.getPlayer();
-        if (!hasSelectedElement.containsKey(player)) return;
-        if (!hasSelectedElement.get(player)) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> openMenu(player), 1L);
-        } else {
-            hasSelectedElement.remove(player);
+        Player jugador = (Player) event.getPlayer();
+        if (!haSeleccionadoElemento.containsKey(jugador)) return;
+        if (!haSeleccionadoElemento.get(jugador)) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> abrirMenu(jugador), 1L);
         }
     }
 }

@@ -1,8 +1,10 @@
-package team.aquatic.studios;
+package team.aquatic.studios.expansion;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import team.aquatic.studios.tools.Utils;
+
 import java.util.Arrays;
 import java.util.List;
 

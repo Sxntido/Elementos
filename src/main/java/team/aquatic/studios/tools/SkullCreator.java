@@ -1,4 +1,4 @@
-package team.aquatic.studios;
+package team.aquatic.studios.tools;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

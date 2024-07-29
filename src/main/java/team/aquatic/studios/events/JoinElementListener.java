@@ -1,6 +1,5 @@
-package team.aquatic.studios;
+package team.aquatic.studios.events;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
